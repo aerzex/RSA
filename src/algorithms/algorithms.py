@@ -1,5 +1,6 @@
 import random
 import math
+import secrets
 
 def algorithm_euclid_extended(x, y):
     if x == 0:
@@ -16,10 +17,13 @@ def algorithm_fast_pow(x, y, modulus=None):
             inverse = algorithm_euclid_extended(x, modulus)[1]
             if inverse is None:
                 raise ValueError("Modular inverse does not exist")
-            return inverse * algorithm_fast_pow(x, -y, modulus) % modulus
+            return algorithm_fast_pow(inverse, -y, modulus)
+    
+    if y == 0:
+        return 1 % modulus if modulus else 1
+    
     result = 1
-    base = x if modulus is None else x % modulus
-    y = abs(y)
+    base = x % modulus if modulus else x
     while y > 0:
         if y & 1:
             result = (result * base) % modulus if modulus else result * base
@@ -150,15 +154,12 @@ def algorithm_comprasion_system(system):
     return chinese_remainder_theorem(solved_system)
 
 
-def algorithm_generate_prime(bit_length):
-    prime = 1
-    for _ in range(bit_length - 1):
-        prime <<= random.randint(0, 1)
-
-    prime |= 1
-
+def algorithm_generate_prime(bit_length, k=50):
     while True:
-        if algorithm_Miller_Rabin_test(prime):
+        prime = secrets.randbits(bit_length)
+        prime |= (1 << (bit_length - 1)) | 1  
+
+        if algorithm_Miller_Rabin_test(prime, k):
             return prime
         
 def algorithm_second_degree_comparison(a, p):
