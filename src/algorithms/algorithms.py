@@ -257,3 +257,24 @@ def spfunc(x, N, c=None):
         return (algorithm_fast_pow(x, 2) + 1) % N
     else:
         return (algorithm_fast_pow(x, 2) + c) % N
+
+def algorithm_all_divisors(N):
+    prime_factors = algorithm_rho_pollard_fact(N)
+    if not prime_factors:
+        return [1]  
+
+    unique_factors = list(set(prime_factors))
+    divisors = [1]
+
+    for factor in unique_factors:
+        max_power = prime_factors.count(factor)
+        current_divisors = divisors.copy()
+
+        for power in range(1, max_power + 1):
+            for d in current_divisors:
+                new_divisor = d * (factor ** power)
+                if new_divisor not in divisors:
+                    divisors.append(new_divisor)
+
+    divisors.sort()
+    return divisors

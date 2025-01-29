@@ -54,7 +54,7 @@ def generate_keys(length):
 
     # password = "P@ssw0rd"  
     # save_keys_windows_format(pub_key, scrt_key, password)
-    
+
     return pub_key, scrt_key
 
 def encrypt(pub_key, message):
@@ -63,7 +63,7 @@ def encrypt(pub_key, message):
     max_msg_len = block_size - 3 - 8
 
     encoded = message.encode('utf-8')
-    blocks = [encoded[i:i+max_msg_len] for i in range(0, len(encoded), max_msg_len)]
+    blocks = [encoded[i:i + max_msg_len] for i in range(0, len(encoded), max_msg_len)]
     enc_blocks = []
     for block in blocks:
         pad_length = block_size - 3 - len(block)
@@ -87,6 +87,7 @@ def decrypt(scrt_key, enc_message):
     for block in enc_message:
         dec_m = algorithm_fast_pow(block, scrt_key["privateExponent"], N)
         print(f'dec_m: {dec_m}')
+
         dec_block = dec_m.to_bytes(block_size, byteorder='big')
         index = dec_block.find(b'\x00', 2)
         if index == -1:
